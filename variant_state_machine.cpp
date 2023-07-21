@@ -71,7 +71,19 @@ private:
 };
 
 using HandleResult = TransitionObject;
+
+/**
+* @brief Return from within a state event handler to signify that this state
+*        has fully "handled" the event and thus it should not be dispatched to
+*        the parent state.
+*/
 const auto kHandled = TransitionObject(nullptr, [](void*){ return true; });
+
+/**
+* @brief Return from within a state event handler to signify that this state
+*        would like to "pass" the event to its parent (i.e., it has not fully
+*        "handled" the event)
+*/
 const auto kPass = TransitionObject(nullptr, [](void*){ return false; });
 
 //==============================================================================
@@ -79,6 +91,8 @@ const auto kPass = TransitionObject(nullptr, [](void*){ return false; });
 /**
 * @brief Abstract base class for all event's with a given handler 
 *        (i.e., visitor)
+*
+* @tparam HANDLER Typename of the handler/visitor base class
 */
 template <typename HANDLER>
 class AbstractEvent
@@ -89,6 +103,9 @@ public:
 
 /**
 * @brief CRTP base class for an event
+*
+* @tparam T Typename of the type (CRTP)
+* @tparam HANDLER Typename of the handler/visitor base class
 */
 template <typename T, typename HANDLER>
 class Event : public AbstractEvent<HANDLER>
@@ -98,6 +115,26 @@ public:
 	{
 		return h.handle(static_cast<const T&>(*this));
 	}
+};
+
+//==============================================================================
+
+template <typename ... Es>
+class EventHandler;
+
+template <typename FIRST>
+class EventHandler<FIRST>
+{
+public:
+	virtual HandleResult handle(const FIRST& e) { return kPass; }
+};
+
+template <typename FIRST, typename ... REST>
+class EventHandler<FIRST, REST...> : public EventHandler<REST...>
+{
+public:
+	using EventHandler<REST...>::handle;
+	virtual HandleResult handle(const FIRST& e) { return kPass; }
 };
 
 //==============================================================================
@@ -392,15 +429,13 @@ private:
 
 //==============================================================================
 
+
 class Event1;
 class Event2;
 
-class Handler
-{
-public:
-	virtual HandleResult handle(const Event1& e) { return kPass; }
-	virtual HandleResult handle(const Event2& e) { return kPass; }
-};
+using Handler = EventHandler<Event1, Event2>;
+
+//==============================================================================
 
 class Event1 : public Event<Event1, Handler>
 {
