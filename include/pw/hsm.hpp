@@ -47,14 +47,14 @@ public:
 	using FnPtr = bool (*)(void*);
 	
 public:
-	TransitionObject(void* ctx, FnPtr fn):
+	constexpr TransitionObject(void* ctx, FnPtr fn):
 		_ctx(ctx),
 		_fn(fn)
 	{
 		
 	}
 	
-	bool operator()()
+	constexpr bool operator()()
 	{
 		return _fn(_ctx);
 	}
@@ -78,14 +78,14 @@ using HandleResult = detail::TransitionObject;
 *        has fully "handled" the event and thus it should not be dispatched to
 *        the parent state.
 */
-const auto kHandled = detail::TransitionObject(nullptr, [](void*){ return true; });
+inline const auto kHandled = detail::TransitionObject(nullptr, [](void*){ return true; });
 
 /**
 * @brief Return from within a state event handler to signify that this state
 *        would like to "pass" the event to its parent (i.e., it has not fully
 *        "handled" the event)
 */
-const auto kPass = detail::TransitionObject(nullptr, [](void*){ return false; });
+inline const auto kPass = detail::TransitionObject(nullptr, [](void*){ return false; });
 
 } //namespace pw::hsm
 
@@ -167,6 +167,10 @@ public:
 	using NoState = std::monostate;
 	using Event = AbstractEvent<HANDLER>;
 	using Parent = PARENT;
+	using HandleResult = ::pw::hsm::HandleResult;
+	
+	inline static const auto kHandled = ::pw::hsm::kHandled;
+	inline static const auto kPass = ::pw::hsm::kHandled;
 	
 public:
 	template <typename ROOT, typename CHILD>
@@ -351,6 +355,10 @@ class State<T, HANDLER, PARENT> : public HANDLER
 public:
 	using Event = AbstractEvent<HANDLER>;
 	using Parent = PARENT;
+	using HandleResult = ::pw::hsm::HandleResult;
+	
+	inline static const auto kHandled = ::pw::hsm::kHandled;
+	inline static const auto kPass = ::pw::hsm::kHandled;
 	
 public:
 	template <typename CHILD>
