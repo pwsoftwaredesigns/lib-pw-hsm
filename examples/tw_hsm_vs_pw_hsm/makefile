@@ -1,9 +1,11 @@
 CXXFLAGS := -Os -fno-rtti -std=c++17 -fdata-sections -ffunction-sections -fno-exceptions
 MAP_TO_CSV := map_to_csv.exe
 
+PRJ_ROOT := ../../
+
 EXTENSIONS := map size.txt map.csv out.txt
 PROGRAMS := variant_state_machine tw_state_machine
-INCLUDE_PATHS += etl/include
+INCLUDE_PATHS += $(PRJ_ROOT)/include
 
 #-------------------------------------------------------------------------------
 
