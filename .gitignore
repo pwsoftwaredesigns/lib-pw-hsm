@@ -2,3 +2,5 @@
 *.exe
 *.map
 *.txt
+*.stackdump
+*.csv

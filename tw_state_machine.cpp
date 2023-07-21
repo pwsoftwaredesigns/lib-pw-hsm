@@ -653,6 +653,9 @@ void AbstractStateMachine::_buildTransition(Transition& tran, CState source, CSt
 #define COUT_EXIT() std::cout << "~" << __FUNCTION__ << std::endl
 #define COUT_EVENT(e_) std::cout << __FUNCTION__ << "(" #e_ ")" << std::endl
 
+namespace sm1
+{
+
 class MyStateMachine : public StateMachine<MyStateMachine>
 {
 public:
@@ -817,12 +820,190 @@ TW_BEGIN_STATE(MyStateMachine::State2)
     TW_END_EVENT_CASE(EXIT)
 }
 TW_END_STATE(MyStateMachine::State2)
+	
+} //namespace sm1
+
+//==============================================================================
+
+namespace sm2
+{
+
+class MyStateMachine : public StateMachine<MyStateMachine>
+{
+public:
+	MyStateMachine()
+	{
+		TW_INITIAL_TRANSITION(MyStateMachine::StateRoot);
+	}
+	~MyStateMachine()
+	{
+		TW_FINAL_TRANSITION(MyStateMachine);
+	}
+	
+	void test1()
+	{
+		dispatch(Event1{10, 20});
+		dispatch(Event2{30});
+	}
+	
+protected:
+	TW_DECLARE_EVENTS(
+		(Event1, int, int),
+		(Event2, int)
+	);
+	
+	TW_DECLARE_STATE(StateRoot, MyStateMachine::top, MyStateMachine::State1);
+		TW_DECLARE_STATE(State1, MyStateMachine::StateRoot, MyStateMachine::State11);
+			TW_DECLARE_STATE(State11, MyStateMachine::State1);
+			TW_DECLARE_STATE(State12, MyStateMachine::State1, MyStateMachine::State121);
+				TW_DECLARE_STATE(State121, MyStateMachine::State12);
+		TW_DECLARE_STATE(State2, MyStateMachine::StateRoot);
+};
+
+TW_BEGIN_STATE(MyStateMachine::StateRoot)
+{
+	TW_BEGIN_EVENT_CASE(ENTER)
+    {
+        COUT_ENTER();
+    }
+    TW_END_EVENT_CASE(ENTER)
+    
+    TW_BEGIN_EVENT_CASE(EXIT)
+    {
+        COUT_EXIT();
+    }
+    TW_END_EVENT_CASE(EXIT)
+    
+    TW_BEGIN_EVENT_CASE(Event1)
+	{
+		COUT_EVENT(Event1);
+		TW_EVENT_HANDLED();
+	}
+	TW_END_EVENT_CASE(Event1)
+	
+	TW_BEGIN_EVENT_CASE(Event2)
+	{
+		COUT_EVENT(Event2);
+		TW_EVENT_HANDLED();
+	}
+	TW_END_EVENT_CASE(Event2)
+}
+TW_END_STATE(MyStateMachine::StateRoot)
+	
+TW_BEGIN_STATE(MyStateMachine::State1)
+{
+	TW_BEGIN_EVENT_CASE(ENTER)
+    {
+        COUT_ENTER();
+    }
+    TW_END_EVENT_CASE(ENTER)
+    
+    TW_BEGIN_EVENT_CASE(EXIT)
+    {
+        COUT_EXIT();
+    }
+    TW_END_EVENT_CASE(EXIT)
+}
+TW_END_STATE(MyStateMachine::State1)
+	
+TW_BEGIN_STATE(MyStateMachine::State11)
+{
+	TW_BEGIN_EVENT_CASE(ENTER)
+    {
+        COUT_ENTER();
+    }
+    TW_END_EVENT_CASE(ENTER)
+    
+    TW_BEGIN_EVENT_CASE(EXIT)
+    {
+        COUT_EXIT();
+    }
+    TW_END_EVENT_CASE(EXIT)
+    
+    TW_BEGIN_EVENT_CASE(Event1)
+	{
+		COUT_EVENT(Event1);
+		TW_TRANSITION(MyStateMachine::State12);
+		TW_EVENT_HANDLED();
+	}
+	TW_END_EVENT_CASE(Event1)
+}
+TW_END_STATE(MyStateMachine::State11)
+	
+TW_BEGIN_STATE(MyStateMachine::State12)
+{
+	TW_BEGIN_EVENT_CASE(ENTER)
+    {
+        COUT_ENTER();
+    }
+    TW_END_EVENT_CASE(ENTER)
+    
+    TW_BEGIN_EVENT_CASE(EXIT)
+    {
+        COUT_EXIT();
+    }
+    TW_END_EVENT_CASE(EXIT)
+    
+    TW_BEGIN_EVENT_CASE(Event2)
+	{
+		COUT_EVENT(Event2);
+		TW_TRANSITION(MyStateMachine::State2);
+		TW_EVENT_HANDLED();
+	}
+	TW_END_EVENT_CASE(Event2)
+}
+TW_END_STATE(MyStateMachine::State12)
+	
+TW_BEGIN_STATE(MyStateMachine::State121)
+{
+	TW_BEGIN_EVENT_CASE(ENTER)
+    {
+        COUT_ENTER();
+    }
+    TW_END_EVENT_CASE(ENTER)
+    
+    TW_BEGIN_EVENT_CASE(EXIT)
+    {
+        COUT_EXIT();
+    }
+    TW_END_EVENT_CASE(EXIT)
+    
+    TW_BEGIN_EVENT_CASE(Event2)
+	{
+		COUT_EVENT(Event2);
+		TW_EVENT_PASS();
+	}
+	TW_END_EVENT_CASE(Event2)
+}
+TW_END_STATE(MyStateMachine::State121)
+	
+TW_BEGIN_STATE(MyStateMachine::State2)
+{
+	TW_BEGIN_EVENT_CASE(ENTER)
+    {
+        COUT_ENTER();
+    }
+    TW_END_EVENT_CASE(ENTER)
+    
+    TW_BEGIN_EVENT_CASE(EXIT)
+    {
+        COUT_EXIT();
+    }
+    TW_END_EVENT_CASE(EXIT)
+}
+TW_END_STATE(MyStateMachine::State2)
+	
+} //namespace sm2
 
 int main()
 {
-	MyStateMachine sm;
+	sm1::MyStateMachine sm1;
 	
-	sm.test1();
+	sm1.test1();
+	
+	sm2::MyStateMachine sm2;
+	
+	sm2.test1();
 	
 	return 0;
 }
