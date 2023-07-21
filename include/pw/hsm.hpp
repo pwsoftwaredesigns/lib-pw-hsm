@@ -1,3 +1,6 @@
+#ifndef INCLUDE_PW_HSM_HPP_
+#define INCLUDE_PW_HSM_HPP_
+
 #include <variant>
 #include <tuple>
 
@@ -442,3 +445,5 @@ private:
 };
 
 } //namespace pw::hsm
+
+#endif //INCLUDE_PW_HSM_HPP_

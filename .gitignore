@@ -4,3 +4,4 @@
 *.txt
 *.stackdump
 *.csv
+*.o
