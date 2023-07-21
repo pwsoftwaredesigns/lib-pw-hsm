@@ -2,6 +2,12 @@
 #define EXAMPLE2_HANDLER_HPP_
 
 #include <pw/hsm.hpp>
+
+/*
+* The handler/visitor base class only requies the forward declarations of each
+* event (because it declares virtual methods accepting const references to
+* these events).
+*/
 #include "events_fwd.hpp"
 
 namespace example2

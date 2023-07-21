@@ -1,7 +1,10 @@
 #include "State1.hpp"
 
-#include "StateRoot.hpp"
-
+/*
+* The definition of State1 requires the declaration (not just the forward
+* declaration) of its parent state(s) in order to compile.
+*/
+#include "states.hpp"
 #include "cout.hpp"
 #include "events.hpp"
 

@@ -1,8 +1,5 @@
 #include <pw/hsm.hpp>
-#include <iostream>
-
 #include "MyStateMachine.hpp"
-#include "events.hpp"
 
 int main()
 {

@@ -4,6 +4,12 @@
 namespace example2
 {
 
+/*
+* Forward declarations of every event.
+* Only the forard declaration is required by the declaration of the "handler"
+* base class interface and the declarations of states.
+*/
+
 class Event1;
 class Event2;
 

@@ -4,6 +4,10 @@
 namespace example2
 {
 
+/*
+* Forward declarations of every state in the state machine
+*/
+
 class MyStateMachine;
 class StateRoot;
 class State1;

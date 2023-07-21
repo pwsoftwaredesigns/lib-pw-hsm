@@ -4,6 +4,14 @@
 #include <pw/hsm.hpp>
 #include "states_fwd.hpp"
 #include "Handler.hpp"
+
+/*
+* State1 requires the complete declaration of all its child states in order
+* to compile correctly. This is because the State template uses std::variant
+* to store/switch between active states. Since std::variant stores its objects
+* directly (i.e., no dynamic memory allocation) it needs to have the complete
+* declaraction of all its types.
+*/
 #include "State11.hpp"
 #include "State12.hpp"
 
